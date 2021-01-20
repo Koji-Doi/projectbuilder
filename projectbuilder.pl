@@ -5,10 +5,11 @@ use Time::Piece;
 use File::Path;
 use File::Copy;
 use Data::Dumper;
-
+use utf8;
 
 binmode STDOUT, ':utf8';
 
+plugin 'DefaultHelpers';
 # Documentation browser under "/perldoc"                                                                                                      
 plugin 'PODRenderer';
 { # display 日本語 properly on dumper                                                                                                         
@@ -53,7 +54,7 @@ any '/edit' => sub{
   (defined $pid) or ($pid, $is_new) = (localtime->strftime("proj%y%m%d"), 1);
 
   my $src = "$extopt{source}/$pid.html";
-  (-f $src) or $c->redirect(url_for("error"));
+  (-f $src) or $c->redirect("/error");
 
 
   ($submitdata{layout}) or $submitdata{layout}="project.html";
@@ -87,7 +88,7 @@ any '/edit' => sub{
 any '/list' => sub {
   my $c = shift;
   my $param = $c->req->params->to_hash;
-print dumper($param);
+print Dumper $param;
   $c->render(template => 'list');
 };
 
@@ -106,6 +107,7 @@ __DATA__
 <li><a href="<%= url_for("/edit") %>"</a>make new project</li>
 <li><a href="<%= url_for("/list") %>"</a>list</li>
 </ul>
+<a href="<%= url_for '/create' %>"crea</a>
 
 @@ enter.html.ep
 % layout 'default';
