@@ -154,14 +154,16 @@ my($submitdata, $initdata) = map {stash($_) || {} } qw/submitdata initdata/;
 $initdata->{'pid'} = $pid;
 my $ddate = $initdata->{ddate} || localtime->ymd('-');
 print $initdata->{ddate}, ">>ddate>> $ddate\n";
+print dumper($submitdata),"\n";
 %>
 
 <h1>Project Entry</h1>
 
 % if($status eq 'submit'){ # edit ended
-  submitted.<br>
 <table border="1" style="text-align:left;">
-% foreach my $key (sort keys %$submitdata){
+<caption><h2>Submitted Data</h2></caption>
+<tr><th><b>Project ID</b></th><th><%= $submitdata->{pid} %></th></tr>
+% foreach my $key (sort grep {$_ ne 'pid'} keys %$submitdata){
 %  my $key1=$key; $key1=~s/^\d+//;
     <tr><th><%= $key1 %></th><td><%= $submitdata->{$key} %></td></tr>
 % }
@@ -199,7 +201,7 @@ print $initdata->{ddate}, ">>ddate>> $ddate\n";
 
 @@ p_item.html.ep
 <%
-#my($desc, $value) = map {stash($_)} qw/desc value/;
+my($name, $label, $desc, $value) = map {stash($_)} qw/name label desc value/;
 my %par = (style=>"width:95%; height:95%; margin:0px;");
 map { defined stash($_) and $par{$_}=stash($_) } qw/desc value name label ph type pattern min max/;
 ($par{type}) or $par{type}='text';
